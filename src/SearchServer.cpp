@@ -4,7 +4,7 @@ std::vector<std::vector<std::pair<int, float>>> SearchServer::searchFoo(const st
 {
     for (int i=0; i<queries_input.size(); i++)
     {
-        uniqRequestsFill(queries_input[i]);
+        uniqRequestsFill(queries_input[i],i);
         preRelevanceFill();
         maxAbsRelevance = findMaxAbsRel();
         result.push_back(sortRelativeIndex());
@@ -12,11 +12,12 @@ std::vector<std::vector<std::pair<int, float>>> SearchServer::searchFoo(const st
     return result;
 }
 
-void SearchServer::uniqRequestsFill(const std::string& request)
+void SearchServer::uniqRequestsFill(const std::string& request, int reqNum)
 {
     uniqRequests.clear();
     int i=0;
     std::string requestWord;
+    int requestWordCount = 0;
     while (request[i])
     {
         char tmpSym = request[i];
@@ -29,6 +30,12 @@ void SearchServer::uniqRequestsFill(const std::string& request)
         {
             uniqRequests.insert({requestWord,0});
             requestWord.clear();
+            if (uniqRequests.size()>=10)
+            {
+                std::cout << "Oops! There is more than 10 uniq words in request number " << reqNum << std::endl;
+                std::cout << "Only first 10 uniq words will be used for searching." << std::endl;
+                break;
+            }
         }
         i++;
     }

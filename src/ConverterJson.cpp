@@ -59,6 +59,7 @@ std::vector<std::string> ConverterJson::GetTextDocuments()
 
     for (auto it: filePaths)
     {
+        int counts = 0;
         std::ifstream file(it);
         if (file.is_open())
         {
@@ -66,8 +67,20 @@ std::vector<std::string> ConverterJson::GetTextDocuments()
             while (!file.eof())
             {
                 file >> tmp1;
-                if (!tmp1.empty())
+                if (!tmp1.empty() && tmp1.length()<100 && counts < 1000)
+                {
                     tmp2 += (" " + tmp1);
+                    counts++;
+                }
+                else if (tmp1.length()>100)
+                {
+                    std::cout << "Oops! Some word in the " << it << " have length more then 100 symbols." << std::endl;
+                    std::cout << "This word will be excluded from search base." << std::endl;
+                }
+            }
+            if (counts >= 1000)
+            {
+                std::cout << "Oops! File " << it << " have more than 1000 words. Only first 1000 words will be used for searching." << std::endl;
             }
             if (!tmp2.empty())
             textFromDocs.push_back(tmp2);
@@ -133,7 +146,14 @@ std::vector<std::string> ConverterJson::GetRequests()
     requests.clear();
     for (auto it = requestFile.begin().value().begin(); it!= requestFile.begin().value().end(); it++)
     {
-        requests.push_back(it.value());
+        if (requests.size()<1000)
+            requests.push_back(it.value());
+        else
+        {
+            std::cout << "Oops! There is more than 1000 requests in 'request.json'." << std::endl;
+            std::cout << "Only first 1000 requests will be used for searching." << std::endl;
+            break;
+        }
     }
 /*    for (auto it2:requests)
     {

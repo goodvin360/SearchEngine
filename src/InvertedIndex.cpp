@@ -64,7 +64,6 @@ std::vector<Entry> InvertedIndex::GetWordCount(const std::string &word)
 
 void InvertedIndex::freqDictInfillThread(std::string &textFromDoc)
 {
-    myMutex.lock();
     /*myMutex.lock();
     std::cout << "This is thread number: " << std::this_thread::get_id() << std::endl;
     myMutex.unlock();
@@ -80,13 +79,14 @@ void InvertedIndex::freqDictInfillThread(std::string &textFromDoc)
             if (wordCondition(textFromDoc[i], textFromDoc[i+1]) && !singleWord.empty())
             {
                 freq_dictionary.insert({singleWord, GetWordCount(singleWord)});
-                /*std::cout << singleWord << '\t';
-                std::cout << std::endl;*/
+                /* myMutex.lock();
+                std::cout << singleWord << '\t';
+                std::cout << std::endl;
+                 myMutex.unlock(); */
                 singleWord.clear();
             }
             i++;
         }
-    myMutex.unlock();
 }
 
 void InvertedIndex::dataMerge()

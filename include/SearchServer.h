@@ -22,7 +22,7 @@ private:
     std::multimap<int,int> preRelevance;
     std::vector<std::vector<std::pair<int, float>>> result;
     std::vector<std::pair<int, float>> relativeIndex;
-    void uniqRequestsFill(const std::string& request);
+    void uniqRequestsFill(const std::string& request, int reqNum);
     void preRelevanceFill();
     int findMaxAbsRel();
     int maxAbsRelevance = 0;
