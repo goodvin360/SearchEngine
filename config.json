@@ -1,6 +1,6 @@
 {
     "config": {
-        "max_responses": "20",
+        "max_responses": "5",
         "name": "SkillboxSearchEngine",
         "version": "0.1"
     },

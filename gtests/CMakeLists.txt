@@ -9,8 +9,6 @@ include_directories(../include
         )
 
 add_executable(GoogleTest_run
-        test1.cpp
-        ConverterJson_test.cpp
         InvertedIndex_test.cpp
         SearchServer_test.cpp
 

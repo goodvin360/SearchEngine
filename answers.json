@@ -15,33 +15,11 @@
         },
         "request002": {
             " result": true,
-            "relevance": [
-                {
-                    "docID": 0,
-                    "rank": 0.25
-                },
-                {
-                    "docID": 0,
-                    "rank": 0.25
-                }
-            ]
+            "docID": 1,
+            "rank": 1.0
         },
         "request003": {
-            " result": true,
-            "relevance": [
-                {
-                    "docID": 1,
-                    "rank": 1.0
-                },
-                {
-                    "docID": 0,
-                    "rank": 0.25
-                },
-                {
-                    "docID": 2,
-                    "rank": 0.25
-                }
-            ]
+            " result": false
         }
     }
 }

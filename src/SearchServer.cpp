@@ -25,7 +25,7 @@ void SearchServer::uniqRequestsFill(const std::string& request)
         {
             requestWord.push_back(request[i]);
         }
-        if (index.wordCondition(tmpSym,tmpNxtSym))
+        if (index.wordCondition(tmpSym,tmpNxtSym) && !requestWord.empty())
         {
             uniqRequests.insert({requestWord,0});
             requestWord.clear();
@@ -60,6 +60,7 @@ void SearchServer::preRelevanceFill()
 
 int SearchServer::findMaxAbsRel()
 {
+    maxAbsRelevance = 0;
     for (auto it=preRelevance.begin(); it!=preRelevance.end(); it++)
     {
         if (it->second > maxAbsRelevance)

@@ -16,8 +16,8 @@ void InvertedIndex::UpdateDocumentBase(std::vector<std::string> input_docs)
 
 bool InvertedIndex::characterCondition(char &symbol)
 {
-    if (symbol!=' ' && symbol!='\0' && symbol!=',' && symbol!='.'
-        && symbol!='!' && symbol!='?' && symbol!=';' && symbol!=':')
+    if (symbol!=' ' && symbol!= '\0' && symbol!= ',' && symbol!= '.'
+        && symbol!= '!' && symbol!= '?' && symbol!= ';' && symbol!= ':')
     {
         return true;
     } else return false;
@@ -64,6 +64,7 @@ std::vector<Entry> InvertedIndex::GetWordCount(const std::string &word)
 
 void InvertedIndex::freqDictInfillThread(std::string &textFromDoc)
 {
+    myMutex.lock();
     /*myMutex.lock();
     std::cout << "This is thread number: " << std::this_thread::get_id() << std::endl;
     myMutex.unlock();
@@ -76,15 +77,16 @@ void InvertedIndex::freqDictInfillThread(std::string &textFromDoc)
             {
                 singleWord.push_back(textFromDoc[i]);
             }
-            if (wordCondition(textFromDoc[i], textFromDoc[i+1]))
+            if (wordCondition(textFromDoc[i], textFromDoc[i+1]) && !singleWord.empty())
             {
                 freq_dictionary.insert({singleWord, GetWordCount(singleWord)});
-                /*std::cout << test << '\t';
+                /*std::cout << singleWord << '\t';
                 std::cout << std::endl;*/
                 singleWord.clear();
             }
             i++;
         }
+    myMutex.unlock();
 }
 
 void InvertedIndex::dataMerge()
@@ -96,6 +98,13 @@ void InvertedIndex::dataMerge()
             freq_dictionary.insert({it2->first,it2->second});
         }
     }
+
+    /*for (auto it:freq_dictionary)
+    {
+        std::cout << it.first << '\t' << std::endl;
+        for (auto it2:it.second)
+        std::cout << it2.doc_id << '\t' << it2.count << std::endl;
+    }*/
 }
 
 std::map<std::string, std::vector<Entry>> *InvertedIndex::getFreqDictionary()
