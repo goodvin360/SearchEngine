@@ -1,26 +1,26 @@
 #include "JsonFill.h"
 
-void JsonFill::fillFile(std::string type)
+void JsonFill::fillFile(const std::string& type)
 {
     if (type=="config")
     {
         configExample.config.insert({"name", "SkillboxSearchEngine"});
         configExample.config.insert({"version", "0.1"});
         configExample.config.insert({"max_responses", "5"});
-        configExample.files.push_back("../resources/file001.txt");
-        configExample.files.push_back("../resources/file002.txt");
-        configExample.files.push_back("../resources/file003.txt");
-        configExample.files.push_back("../resources/file004.txt");
+        configExample.files.emplace_back("../resources/file001.txt");
+        configExample.files.emplace_back("../resources/file002.txt");
+        configExample.files.emplace_back("../resources/file003.txt");
+        configExample.files.emplace_back("../resources/file004.txt");
     }
     else if(type=="request")
     {
-        requestExample.requests.push_back("milk water");
-        requestExample.requests.push_back("sugar");
-        requestExample.requests.push_back("It pepper salt milk number one saw");
+        requestExample.requests.emplace_back("milk water");
+        requestExample.requests.emplace_back("sugar");
+        requestExample.requests.emplace_back("It pepper salt milk number one saw");
     }
 }
 
-void JsonFill::printFile(std::string type, std::string path)
+void JsonFill::printFile(const std::string& type, const std::string& path)
 {
     if (type=="config")
     {
@@ -31,8 +31,6 @@ void JsonFill::printFile(std::string type, std::string path)
         std::string toOut;
         toOut = configFile.dump(4);
         file << std::setw(4) << toOut << std::endl;
-        //    file << std::setw(4) << configFile << std::endl;
-
     }
     else if(type=="request")
     {

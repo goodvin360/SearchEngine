@@ -17,7 +17,7 @@ ConverterJson::ConverterJson()
     }
     configRead.close();
 
-    readConfig(); //check for config field in the file and max.resp. limit
+    readConfig();
 
     std::ifstream requestRead("../request.json");
     requestRead >> requestFile;
@@ -40,7 +40,6 @@ void ConverterJson::readConfig()
                 for (auto it2 = it_files.value().begin(); it2!= it_files.value().end(); it2++)
                 {
                     filePaths.push_back(it2.value());
-    //                std::cout << it2.value() << std::endl;
                 }
             }
 
@@ -57,7 +56,7 @@ std::vector<std::string> ConverterJson::GetTextDocuments()
 {
     textFromDocs.clear();
 
-    for (auto it: filePaths)
+    for (const auto& it: filePaths)
     {
         int counts = 0;
         std::ifstream file(it);
@@ -105,14 +104,7 @@ std::vector<std::string> ConverterJson::GetTextDocuments()
     {
         std::cout << "All documents in search base are empty!" << std::endl;
     }
-
-/*    for (auto it2:textFromDocs)
-    {
-        std::cout << it2 << std::endl;
-        std::cout << std::endl;
-    }*/
-
-
+    return {};
 }
 
 void ConverterJson::ResponseLimit()
@@ -135,7 +127,7 @@ void ConverterJson::ResponseLimit()
     }
 }
 
-int ConverterJson::GetResponseLimit()
+int ConverterJson::GetResponseLimit() const
 {
     int var = respLimit;
     return var;
@@ -155,11 +147,6 @@ std::vector<std::string> ConverterJson::GetRequests()
             break;
         }
     }
-/*    for (auto it2:requests)
-    {
-        std::cout << it2 << std::endl;
-        std::cout << std::endl;
-    }*/
     return requests;
 }
 
@@ -171,9 +158,9 @@ void ConverterJson::putAnswers(std::vector<std::vector<std::pair<int, float>>> a
     for (int i=0; i<answers.size(); i++)
     {
         float check=0;
-        for (int j=0; j<answers[i].size();j++)
+        for (auto & j : answers[i])
         {
-            check+=answers[i][j].second;
+            check+=j.second;
         }
         if (check>0)
             ans.flag = true;
@@ -185,17 +172,17 @@ void ConverterJson::putAnswers(std::vector<std::vector<std::pair<int, float>>> a
         if (ans.flag)
         {
             int var=0;
-            for (int j = 0; j < answers[i].size(); j++)
+            for (auto & j : answers[i])
             {
-                if (answers[i][j].second>0)
+                if (j.second>0)
                 {
                     std::pair<std::string, int> pair1;
                     std::pair<std::string, float> pair2;
                     pair1.first = "docID";
-                    pair1.second = answers[i][j].first;
+                    pair1.second = j.first;
                     pair2.first = "rank";
-                    pair2.second = floorf(100*answers[i][j].second)/100;
-                    vecData.push_back(std::make_pair(pair1, pair2));
+                    pair2.second = floorf(100*j.second)/100;
+                    vecData.emplace_back(pair1, pair2);
                     var++;
                 }
             }
@@ -218,7 +205,7 @@ void ConverterJson::putAnswers(std::vector<std::vector<std::pair<int, float>>> a
     file << std::setw(4) << answerFile << std::endl;
 }
 
-const std::vector<std::string> ConverterJson::GetRequestsData()
+std::vector<std::string> ConverterJson::GetRequestsData()
 {
     GetRequests();
     const std::vector<std::string> res = requests;

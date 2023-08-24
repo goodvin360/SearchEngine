@@ -17,16 +17,15 @@ void SearchServer::uniqRequestsFill(const std::string& request, int reqNum)
     uniqRequests.clear();
     int i=0;
     std::string requestWord;
-    int requestWordCount = 0;
     while (request[i])
     {
         char tmpSym = request[i];
         char tmpNxtSym = request[i+1];
-        if (index.characterCondition(tmpSym))
+        if (InvertedIndex::characterCondition(tmpSym))
         {
             requestWord.push_back(request[i]);
         }
-        if (index.wordCondition(tmpSym,tmpNxtSym) && !requestWord.empty())
+        if (InvertedIndex::wordCondition(tmpSym,tmpNxtSym) && !requestWord.empty())
         {
             uniqRequests.insert({requestWord,0});
             requestWord.clear();
@@ -47,16 +46,16 @@ void SearchServer::preRelevanceFill()
     for (int i=0; i<dataJson.GetFilesNum(); i++)
     {
         int absRelevance=0;
-        for (auto it:uniqRequests)
+        for (const auto& it:uniqRequests)
         {
             auto it2 = index.getFreqDictionary()->find(it.first);
             if (it2!=index.getFreqDictionary()->end())
             {
-                for (int j=0; j<it2->second.size(); j++)
+                for (auto & j : it2->second)
                 {
-                    if(it2->second[j].doc_id==i)
+                    if(j.doc_id==i)
                     {
-                        absRelevance+=it2->second[j].count;
+                        absRelevance+=(int)j.count;
                     }
                 }
             }
@@ -68,11 +67,11 @@ void SearchServer::preRelevanceFill()
 int SearchServer::findMaxAbsRel()
 {
     maxAbsRelevance = 0;
-    for (auto it=preRelevance.begin(); it!=preRelevance.end(); it++)
+    for (auto & it : preRelevance)
     {
-        if (it->second > maxAbsRelevance)
+        if (it.second > maxAbsRelevance)
         {
-            maxAbsRelevance = it->second;
+            maxAbsRelevance = it.second;
         }
     }
     return maxAbsRelevance;
@@ -94,7 +93,7 @@ std::vector<std::pair<int, float>> SearchServer::sortRelativeIndex()
         std::pair<int,float> tempIndex;
         tempIndex.first = it->second;
         if (maxAbsRelevance!=0)
-            tempIndex.second = floorf(100*(float)(it->first)/maxAbsRelevance)/100;
+            tempIndex.second = floorf(100*(float)(it->first)/(float)maxAbsRelevance)/100;
         else tempIndex.second = 0;
         if (tempIndex.second>0)
         {

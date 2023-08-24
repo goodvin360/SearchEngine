@@ -1,17 +1,11 @@
 #include "InvertedIndex.h"
 
+#include <utility>
 
-std::mutex myMutex;
 
 void InvertedIndex::UpdateDocumentBase(std::vector<std::string> input_docs)
 {
-    docs = input_docs;
-/*        for (auto it2:docs)
-    {
-        std::cout << it2 << std::endl;
-        std::cout << std::endl;
-    }
-    */
+    docs = std::move(input_docs);
 }
 
 bool InvertedIndex::characterCondition(char &symbol)
@@ -36,7 +30,7 @@ std::vector<Entry> InvertedIndex::GetWordCount(const std::string &word)
     std::vector<Entry> wordData{};
     for (int i=0; i<docs.size(); i++)
     {
-        Entry wordEntry;
+        Entry wordEntry{};
         wordEntry.doc_id = i;
         wordEntry.count=0;
 
@@ -64,10 +58,6 @@ std::vector<Entry> InvertedIndex::GetWordCount(const std::string &word)
 
 void InvertedIndex::freqDictInfillThread(std::string &textFromDoc)
 {
-    /*myMutex.lock();
-    std::cout << "This is thread number: " << std::this_thread::get_id() << std::endl;
-    myMutex.unlock();
-    std::this_thread::sleep_for(std::chrono::seconds(2));*/
         int i=0;
         std::string singleWord;
         while (textFromDoc[i])
@@ -79,10 +69,6 @@ void InvertedIndex::freqDictInfillThread(std::string &textFromDoc)
             if (wordCondition(textFromDoc[i], textFromDoc[i+1]) && !singleWord.empty())
             {
                 freq_dictionary.insert({singleWord, GetWordCount(singleWord)});
-                /* myMutex.lock();
-                std::cout << singleWord << '\t';
-                std::cout << std::endl;
-                 myMutex.unlock(); */
                 singleWord.clear();
             }
             i++;
@@ -91,20 +77,13 @@ void InvertedIndex::freqDictInfillThread(std::string &textFromDoc)
 
 void InvertedIndex::dataMerge()
 {
-    for (auto it:classParts)
+    for (const auto& it:classParts)
     {
-        for (auto it2 = it.freq_dictionary.begin(); it2!=it.freq_dictionary.end(); it2++)
+        for (auto & it2 : it.freq_dictionary)
         {
-            freq_dictionary.insert({it2->first,it2->second});
+            freq_dictionary.insert({it2.first,it2.second});
         }
     }
-
-    /*for (auto it:freq_dictionary)
-    {
-        std::cout << it.first << '\t' << std::endl;
-        for (auto it2:it.second)
-        std::cout << it2.doc_id << '\t' << it2.count << std::endl;
-    }*/
 }
 
 std::map<std::string, std::vector<Entry>> *InvertedIndex::getFreqDictionary()

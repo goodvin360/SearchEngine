@@ -20,21 +20,22 @@ struct RequestFile
     std::vector<std::string> requests;
 };
 
-struct AnswerFile
-{
-
-};
-
 class JsonFill
 {
 private:
     ConfigFile configExample;
     RequestFile requestExample;
-    AnswerFile answerExample;
 
 public:
-    void fillFile(std::string type);
-    void printFile(std::string type, std::string path);
+    void fillFile(const std::string& type);
+    /*
+     * вспомогательный метод для заполнения файлов 'config.json' и 'request.json' программными средствами. Итогом работы методов является
+     * формирование указанных файлов в корневом каталоге проекта
+    */
+    void printFile(const std::string& type, const std::string& path);
+    /*
+     * вспомогательный метод для вывода в консоль данных из документов рассматриваемой базы
+    */
 };
 
 #endif //FINALPROJECT_JSONFILL_H
